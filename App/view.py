@@ -38,8 +38,9 @@ operación seleccionada.
 #  Ruta a los archivos
 # ___________________________________________________
 
-
-
+booksfile = 'GoodReads/books-small.csv'
+tagsfile = 'GoodReads/tags.csv'
+booktagsfile = 'GoodReads/book_tags-small.csv'
 
 
 # ___________________________________________________
@@ -49,7 +50,95 @@ operación seleccionada.
 # ___________________________________________________
 
 
+def printAuthorData(author):
+    """
+    Imprime los libros de un autor determinado
+    """
+    if author:
+        print('Autor encontrado: ' + author['name'])
+        print('Promedio: ' + str(author['average_rating']))
+        print('Total de libros: ' + str(lt.size(author['books'])))
+        iterator = it.newIterator(author['books'])
+        while it.hasNext(iterator):
+            book = it.next(iterator)
+            print('Titulo: ' + book['title'] + '  ISBN: ' + book['isbn'])
+    else:
+        print('No se encontro el autor')
+
+
+def printBooksbyTag(books):
+    """
+    Imprime los libros que han sido clasificados con
+    una etiqueta
+    """
+    print('Se encontraron: ' + str(lt.size(books)) + ' Libros')
+    iterator = it.newIterator(books)
+    while it.hasNext(iterator):
+        book = it.next(iterator)
+        print(book['title'])
+
+
+def printBooksbyYear(books):
+    """
+    Imprime los libros que han sido publicados en un
+    año
+    """
+    print('Se encontraron: ' + str(lt.size(books)) + ' Libros')
+    iterator = it.newIterator(books)
+    while it.hasNext(iterator):
+        book = it.next(iterator)
+        print(book['title'])
+
 
 # ___________________________________________________
 #  Menu principal
 # ___________________________________________________
+
+
+def printMenu():
+    print("Bienvenido")
+    print("1- Inicializar Catálogo")
+    print("2- Cargar información en el catálogo")
+    print("3- Consultar los libros de un año")
+    print("4- Consultar los libros de un autor")
+    print("5- Consultar los Libros por etiqueta")
+    print("0- Salir")
+
+
+"""
+Menu principal
+"""
+while True:
+    printMenu()
+    inputs = input('Seleccione una opción para continuar\n')
+
+    if int(inputs[0]) == 1:
+        print("Inicializando Catálogo ....")
+        # cont es el controlador que se usará de acá en adelante
+        cont = controller.initCatalog()
+
+    elif int(inputs[0]) == 2:
+        print("Cargando información de los archivos ....")
+        controller.loadData(cont, booksfile, tagsfile, booktagsfile)
+        print('Libros cargados: ' + str(controller.booksSize(cont)))
+        print('Autores cargados: ' + str(controller.authorsSize(cont)))
+        print('Géneros cargados: ' + str(controller.tagsSize(cont)))
+
+    elif int(inputs[0]) == 3:
+        number = input("Buscando libros del año?: ")
+        books = controller.getBooksYear(cont, int(number))
+        printBooksbyYear(books)
+
+    elif int(inputs[0]) == 4:
+        authorname = input("Nombre del autor a buscar: ")
+        authorinfo = controller.getBooksByAuthor(cont, authorname)
+        printAuthorData(authorinfo)
+
+    elif int(inputs[0]) == 5:
+        label = input("Etiqueta a buscar: ")
+        books = controller.getBooksByTag(cont, label)
+        printBooksbyTag(books)
+    else:
+        sys.exit(0)
+sys.exit(0)
+
