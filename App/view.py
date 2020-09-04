@@ -38,9 +38,9 @@ operación seleccionada.
 #  Ruta a los archivos
 # ___________________________________________________
 
-booksfile = 'GoodReads/books-small.csv'
-tagsfile = 'GoodReads/tags.csv'
-booktagsfile = 'GoodReads/book_tags-small.csv'
+moviesfile = 'DetailsSmall.csv'
+#tagsfile = 'GoodReads/tags.csv'
+#booktagsfile = 'GoodReads/book_tags-small.csv'
 
 
 # ___________________________________________________
@@ -119,8 +119,8 @@ while True:
 
     elif int(inputs[0]) == 2:
         print("Cargando información de los archivos ....")
-        controller.loadData(cont, booksfile, tagsfile, booktagsfile)
-        print('Libros cargados: ' + str(controller.booksSize(cont)))
+        controller.loadData(cont, moviesfile)
+        print('Películas cargadas cargados: ' + str(controller.moviesSize(cont)))
         print('Autores cargados: ' + str(controller.authorsSize(cont)))
         print('Géneros cargados: ' + str(controller.tagsSize(cont)))
 
