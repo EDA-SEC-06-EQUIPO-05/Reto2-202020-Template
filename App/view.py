@@ -88,8 +88,7 @@ def printBooksbyYear(books):
     while it.hasNext(iterator):
         book = it.next(iterator)
         print(book['title'])
-
-
+    
 # ___________________________________________________
 #  Menu principal
 # ___________________________________________________
@@ -113,34 +112,39 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
 
-    if int(inputs[0]) == 1:
+    if int(inputs) == 1:
         archivo= input("Ingrese el nombre del archivo que desea cargar: ")
         print("Cargando lista de datos... ")
         lista_datos= controller.cargar_datos(archivo)
+        primer_elemento= controller.datos_primer_elemento(lista_datos)
+        ultimo_elemento= controller.datos_ultimo_elemento(lista_datos)
+        print("Se cargo el registro de "+str(lt.size(lista_datos))+" peliculas. A continuación esta la informacion de la primera y ultima pelicula del registro: \n")
+        print("Nombre de la pelicula: "+primer_elemento[0]+", Fecha de estreno: "+primer_elemento[1]+", Calificacion promedio: "+primer_elemento[2]+", Cantidad de votos: "+primer_elemento[3]+", Idioma original: "+primer_elemento[4]+"\n")
+        print("Nombre de la pelicula: "+ultimo_elemento[0]+", Fecha de estreno: "+ultimo_elemento[1]+", Calificacion promedio: "+ultimo_elemento[2]+", Cantidad de votos: "+ultimo_elemento[3]+", Idioma original: "+ultimo_elemento[4]+"\n")
 
-    elif int(inputs[0]) == 2:
+    elif int(inputs) == 2:
         print("Inicializando Catálogo ....")
         # cont es el controlador que se usará de acá en adelante
         cont = controller.initCatalog()
 
-    elif int(inputs[0]) == 3:
+    elif int(inputs) == 3:
         print("Cargando información de los archivos ....")
         controller.loadData(cont, moviesfile)
         print('Películas cargadas cargados: ' + str(controller.moviesSize(cont)))
         print('Autores cargados: ' + str(controller.authorsSize(cont)))
         print('Géneros cargados: ' + str(controller.tagsSize(cont)))
 
-    elif int(inputs[0]) == 4:
+    elif int(inputs) == 4:
         number = input("Buscando libros del año?: ")
         books = controller.getBooksYear(cont, int(number))
         printBooksbyYear(books)
 
-    elif int(inputs[0]) == 5:
+    elif int(inputs) == 5:
         authorname = input("Nombre del autor a buscar: ")
         authorinfo = controller.getBooksByAuthor(cont, authorname)
         printAuthorData(authorinfo)
 
-    elif int(inputs[0]) == 6:
+    elif int(inputs) == 6:
         label = input("Etiqueta a buscar: ")
         books = controller.getBooksByTag(cont, label)
         printBooksbyTag(books)

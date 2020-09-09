@@ -146,8 +146,16 @@ def getBooksYear(catalog, year):
     books = model.getBooksByYear(catalog, year)
     return books
 
-def cargar_datos(archivo)->None:
+def datos_primer_elemento(lista):
+    primer_ele= model.element_data(lista,"primera")
+    return primer_ele
 
-    lista_data= model.load_data(archivo)
-    return None
+def datos_ultimo_elemento(lista):
+    ultimo_ele= model.element_data(lista,"ultima")
+    return ultimo_ele
+
+def cargar_datos(archivo):
+
+    lista_data= model.load_file(archivo)
+    return lista_data
 

@@ -344,19 +344,31 @@ def compareRelease(year1, year2):
         return 1
     else:
         return 0
+    
+def element_data(lista,orden):
 
-def load_data(archivo_csv)->None:
+    lt_datos= []
+    if orden== "primera":
+        datos= lt.firstElement(lista)
+    elif orden== "ultima":
+        datos= lt.lastElement(lista)
+    lt_datos.append(datos["original_title"])
+    lt_datos.append(datos["release_date"])
+    lt_datos.append(datos["vote_average"])
+    lt_datos.append(datos["vote_count"])
+    lt_datos.append(datos["spoken_languages"])
 
-    lista_datos= []
+    return lt_datos
+
+def load_file (archivo):
+    lst=lt.newList("ARRAY_LIST")
     dialect = csv.excel()
-    dialect.delimiter=","
+    dialect.delimiter=";"
     try:
-        with open(config.data_dir + archivo_csv, encoding="utf-8") as csvfile:
+        with open(config.data_dir + archivo, encoding="utf-8") as csvfile:
             row = csv.DictReader(csvfile, dialect=dialect)
             for elemento in row: 
-                print(elemento)
-
+                lt.addLast(lst,elemento)
     except:
         print("Hubo un error con la carga del archivo")
-
-    return None
+    return lst
