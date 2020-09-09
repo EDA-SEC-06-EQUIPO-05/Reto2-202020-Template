@@ -56,7 +56,7 @@ def loadData(catalog, moviesfile):
     """
     Carga los datos de los archivos en el modelo
     """
-    loadMovs(catalog, file)
+    loadMovs(catalog, moviesfile)
     #loadTags(catalog, tagsfile)
     #loadBooksTags(catalog, booktagsfile)
 
@@ -145,4 +145,9 @@ def getBooksYear(catalog, year):
     """
     books = model.getBooksByYear(catalog, year)
     return books
+
+def cargar_datos(archivo)->None:
+
+    lista_data= model.load_data(archivo)
+    return None
 

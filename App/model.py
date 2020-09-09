@@ -20,6 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  """
 import config
+import csv
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
@@ -344,4 +345,18 @@ def compareRelease(year1, year2):
     else:
         return 0
 
+def load_data(archivo_csv)->None:
 
+    lista_datos= []
+    dialect = csv.excel()
+    dialect.delimiter=","
+    try:
+        with open(config.data_dir + archivo_csv, encoding="utf-8") as csvfile:
+            row = csv.DictReader(csvfile, dialect=dialect)
+            for elemento in row: 
+                print(elemento)
+
+    except:
+        print("Hubo un error con la carga del archivo")
+
+    return None

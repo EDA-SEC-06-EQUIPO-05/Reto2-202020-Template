@@ -97,11 +97,12 @@ def printBooksbyYear(books):
 
 def printMenu():
     print("Bienvenido")
-    print("1- Inicializar Catálogo")
-    print("2- Cargar información en el catálogo")
-    print("3- Consultar los libros de un año")
-    print("4- Consultar los libros de un autor")
-    print("5- Consultar los Libros por etiqueta")
+    print("1- Cargar datos")
+    print("2- Inicializar Catálogo")
+    print("3- Cargar información en el catálogo")
+    print("4- Consultar los libros de un año")
+    print("5- Consultar los libros de un autor")
+    print("6- Consultar los Libros por etiqueta")
     print("0- Salir")
 
 
@@ -113,28 +114,33 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
 
     if int(inputs[0]) == 1:
+        archivo= input("Ingrese el nombre del archivo que desea cargar: ")
+        print("Cargando lista de datos... ")
+        lista_datos= controller.cargar_datos(archivo)
+
+    elif int(inputs[0]) == 2:
         print("Inicializando Catálogo ....")
         # cont es el controlador que se usará de acá en adelante
         cont = controller.initCatalog()
 
-    elif int(inputs[0]) == 2:
+    elif int(inputs[0]) == 3:
         print("Cargando información de los archivos ....")
         controller.loadData(cont, moviesfile)
         print('Películas cargadas cargados: ' + str(controller.moviesSize(cont)))
         print('Autores cargados: ' + str(controller.authorsSize(cont)))
         print('Géneros cargados: ' + str(controller.tagsSize(cont)))
 
-    elif int(inputs[0]) == 3:
+    elif int(inputs[0]) == 4:
         number = input("Buscando libros del año?: ")
         books = controller.getBooksYear(cont, int(number))
         printBooksbyYear(books)
 
-    elif int(inputs[0]) == 4:
+    elif int(inputs[0]) == 5:
         authorname = input("Nombre del autor a buscar: ")
         authorinfo = controller.getBooksByAuthor(cont, authorname)
         printAuthorData(authorinfo)
 
-    elif int(inputs[0]) == 5:
+    elif int(inputs[0]) == 6:
         label = input("Etiqueta a buscar: ")
         books = controller.getBooksByTag(cont, label)
         printBooksbyTag(books)
