@@ -59,11 +59,11 @@ def newCatalog():
 
     catalog['producers'] = mp.newMap(200,109345121,
                                    maptype='PROBING',
-                                   loadfactor=0.4,
+                                   loadfactor=0.5,
                                    comparefunction=compareProducersByName)
     catalog['movieIds'] = mp.newMap(200,109345121,
                                    maptype='PROBING',
-                                   loadfactor=0.4,
+                                   loadfactor=0.5,
                                    comparefunction=compareMapMovieIds)
     
     return catalog

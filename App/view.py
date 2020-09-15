@@ -26,6 +26,7 @@ from DISClib.ADT import list as lt
 from DISClib.DataStructures import listiterator as it
 from App import controller
 assert config
+from time import process_time 
 
 """
 La vista se encarga de la interacción con el usuario.
@@ -99,9 +100,7 @@ def printMenu():
     print("1- Cargar datos")
     print("2- Inicializar Catálogo")
     print("3- Cargar información en el catálogo")
-    print("4- Consultar los libros de un año")
-    print("5- Consultar las películas de una productora")
-    print("6- Consultar los Libros por etiqueta")
+    print("4- Consultar las películas de una productora")
     print("0- Salir")
 
 
@@ -115,7 +114,10 @@ while True:
     if int(inputs) == 1:
         archivo= input("Ingrese el nombre del archivo que desea cargar: ")
         print("Cargando lista de datos... ")
+        #t1_start = process_time() #tiempo inicial
         lista_datos= controller.cargar_datos(archivo)
+        #t1_stop = process_time() #tiempo final
+        #print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
         #print(lista_datos)
         #primer_elemento= controller.datos_primer_elemento(lista_datos)
         #ultimo_elemento= controller.datos_ultimo_elemento(lista_datos)
@@ -128,27 +130,27 @@ while True:
         # cont es el controlador que se usará de acá en adelante
         cont = controller.initCatalog()
         #print(cont)
-
+    elif int(inputs) == 3:
         print("Cargando información de los archivos ....")
+        #t1_start = process_time() #tiempo inicial
         controller.loadData(cont, archivo)
         print('Películas cargadas cargados: ' + str(controller.moviesSize(cont)))
         print('Productoras cargadas: ' + str(controller.producersSize(cont)))
+        #t1_stop = process_time() #tiempo final
+        #print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
+        #Con Chaining la información de los archivos carga en 22.28125  segundos y factor de carga 0.4
+        #Con Chaining la información de los archivos carga en 37.515625  segundos y factor de carga 2.0
+        #Con Chaining la información de los archivos carga en 123.46875  segundos y factor de carga 10.0
+        #Con Probing la información de los archivos carga en 219.953125  segundos y factor de carga 0.4
+        #Con Probing la información de los archivos carga en 200.65625  segundos y factor de carga 0.5
         #print('Géneros cargados: ' + str(controller.tagsSize(cont)))
-
     elif int(inputs) == 4:
-        number = input("Buscando libros del año?: ")
-        books = controller.getBooksYear(cont, int(number))
-        printBooksbyYear(books)
-
-    elif int(inputs) == 5:
         producername = input("Nombre de la productora a buscar: ")
+        #t1_start = process_time() #tiempo inicial
         producerinfo = controller.getMoviesbyProducer(cont, producername)
         printProducerData(producerinfo)
-
-    elif int(inputs) == 6:
-        label = input("Etiqueta a buscar: ")
-        books = controller.getBooksByTag(cont, label)
-        printBooksbyTag(books)
+        #t1_stop = process_time() #tiempo final
+        #print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
     else:
         sys.exit(0)
 sys.exit(0)
