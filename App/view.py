@@ -100,7 +100,7 @@ def printMenu():
     print("2- Inicializar Catálogo")
     print("3- Cargar información en el catálogo")
     print("4- Consultar los libros de un año")
-    print("5- Consultar los libros de un autor")
+    print("5- Consultar las películas de una productora")
     print("6- Consultar los Libros por etiqueta")
     print("0- Salir")
 
@@ -116,11 +116,11 @@ while True:
         archivo= input("Ingrese el nombre del archivo que desea cargar: ")
         print("Cargando lista de datos... ")
         lista_datos= controller.cargar_datos(archivo)
-        primer_elemento= controller.datos_primer_elemento(lista_datos)
-        ultimo_elemento= controller.datos_ultimo_elemento(lista_datos)
-        print("Se cargo el registro de "+str(lt.size(lista_datos))+" peliculas. A continuación esta la informacion de la primera y ultima pelicula del registro: \n")
-        print("Nombre de la pelicula: "+primer_elemento[0]+", Fecha de estreno: "+primer_elemento[1]+", Calificacion promedio: "+primer_elemento[2]+", Cantidad de votos: "+primer_elemento[3]+", Idioma original: "+primer_elemento[4]+"\n")
-        print("Nombre de la pelicula: "+ultimo_elemento[0]+", Fecha de estreno: "+ultimo_elemento[1]+", Calificacion promedio: "+ultimo_elemento[2]+", Cantidad de votos: "+ultimo_elemento[3]+", Idioma original: "+ultimo_elemento[4]+"\n")
+        #primer_elemento= controller.datos_primer_elemento(lista_datos)
+        #ultimo_elemento= controller.datos_ultimo_elemento(lista_datos)
+        #print("Se cargo el registro de "+str(lt.size(lista_datos))+" peliculas. A continuación esta la informacion de la primera y ultima pelicula del registro: \n")
+        #print("Nombre de la pelicula: "+primer_elemento[0]+", Fecha de estreno: "+primer_elemento[1]+", Calificacion promedio: "+primer_elemento[2]+", Cantidad de votos: "+primer_elemento[3]+", Idioma original: "+primer_elemento[4]+"\n")
+        #print("Nombre de la pelicula: "+ultimo_elemento[0]+", Fecha de estreno: "+ultimo_elemento[1]+", Calificacion promedio: "+ultimo_elemento[2]+", Cantidad de votos: "+ultimo_elemento[3]+", Idioma original: "+ultimo_elemento[4]+"\n")
 
     elif int(inputs) == 2:
         print("Inicializando Catálogo ....")
@@ -140,9 +140,9 @@ while True:
         printBooksbyYear(books)
 
     elif int(inputs) == 5:
-        authorname = input("Nombre del autor a buscar: ")
-        authorinfo = controller.getBooksByAuthor(cont, authorname)
-        printAuthorData(authorinfo)
+        producername = input("Nombre de la productora a buscar: ")
+        producerinfo = controller.getMoviesbyProducer(cont, producername)
+        print(producerinfo)
 
     elif int(inputs) == 6:
         label = input("Etiqueta a buscar: ")

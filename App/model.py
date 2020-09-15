@@ -49,46 +49,31 @@ def newCatalog():
     Retorna el catalogo inicializado.
     """
     catalog = {'movies': None,
-               'title': None,
-               'original_language': None,
-               'vote_average': None,
-               'vote_count': None,
-               'release_date': None}
+               #'title': None,
+               'producers': None}
+               #'vote_average': None,
+               #'vote_count': None,
+               #'release_date': None}
 
-    catalog['movies'] = lt.newList('SINGLE_LINKED', comparemoviesIds)
-    catalog['title'] = mp.newMap(200,
-                                   maptype='PROBING',
-                                   loadfactor=0.4,
-                                   comparefunction=compareMapmoviesIds)
-    catalog['original_language'] = mp.newMap(200,
+    catalog['movies'] = lt.newList('SINGLE_LINKED', compareMoviesIds)
+
+    catalog['producers'] = mp.newMap(200,
                                    maptype='PROBING',
                                    loadfactor=0.4,
                                    comparefunction=compareLanguage)
-    catalog['vote_average'] = mp.newMap(1000,
-                                maptype='CHAINING',
-                                loadfactor=0.7,
-                                comparefunction=compareAverage)
-    catalog['vote_count'] = mp.newMap(1000,
-                                  maptype='CHAINING',
-                                  loadfactor=0.7,
-                                  comparefunction=compareCount)
-    catalog['release_date'] = mp.newMap(500,
-                                 maptype='CHAINING',
-                                 loadfactor=0.7,
-                                 comparefunction=compareMapRelease)
-
+    
     return catalog
 
 
-def newMovie(name):
+def newProducer(name):
     """
-    Crea una nueva estructura para modelar los libros de un autor
+    Crea una nueva estructura para modelar las peliculas de una productora
     y su promedio de ratings
     """
-    author = {'name': "", "books": None,  "average_rating": 0}
-    author['name'] = name
-    author['books'] = lt.newList('SINGLE_LINKED', compareAuthorsByName)
-    return author
+    producer = {'name': "", "movies": None,  "average_rating": 0}
+    producer['name'] = name
+    producer['movies'] = lt.newList('SINGLE_LINKED', compareAuthorsByName)
+    return producer
 
 
 def newTagBook(name, id):
@@ -113,7 +98,7 @@ def newTagBook(name, id):
 
 def addMovie(catalog, movie):
     """
-    Esta funcion adiciona un libro a la lista de libros,
+    Esta funcion adiciona una pelicula a la lista de peliculas,
     adicionalmente lo guarda en un Map usando como llave su Id.
     Finalmente crea una entrada en el Map de años, para indicar que este
     libro fue publicaco en ese año.
@@ -152,31 +137,31 @@ def newYear(pubyear):
     entry['year'] = pubyear
     entry['books'] = lt.newList('SINGLE_LINKED', compareReleased)
     return entry
+'''
 
-
-def addMovieDirector(catalog, directorname, movie):
+def addMovieProducer(catalog, producername, movie):
     """
     Esta función adiciona un libro a la lista de libros publicados
     por un autor.
     Cuando se adiciona el libro se actualiza el promedio de dicho autor
     """
-    directors = catalog['director']
-    existdirector = mp.contains(directors, directorname)
-    if existdirector:
-        entry = mp.get(directors, directorname)
-        director = me.getValue(entry)
+    producers = catalog['producers']
+    existproducer = mp.contains(producers, producername)
+    if existproducer:
+        entry = mp.get(producers, producername)
+        producer = me.getValue(entry)
     else:
-        director = newAuthor(authorname)
-        mp.put(authors, authorname, author)
-    lt.addLast(author['books'], book)
+        producer = newProducer(producername)
+        mp.put(producers, producername, producer)
+    lt.addLast(producer['movies'], movie)
 
-    authavg = author['average_rating']
-    bookavg = book['average_rating']
-    if (authavg == 0.0):
-        author['average_rating'] = float(bookavg)
+    produceravg = producer['average_rating']
+    movieavg = movie['average_rating']
+    if (produceravg == 0.0):
+        producer['average_rating'] = float(movieavg)
     else:
-        author['average_rating'] = (authavg + float(bookavg)) / 2
-
+        producer['average_rating'] = (produceravg + float(movieavg)) / 2
+'''
 def addTag(catalog, tag):
     """
     Adiciona un tag a la tabla de tags dentro del catalogo
@@ -210,15 +195,15 @@ def addBookTag(catalog, tag):
 # ==============================
 
 
-def getBooksByAuthor(catalog, authorname):
+def getMoviesbyProducer(catalog, producername):
     """
     Retorna un autor con sus libros a partir del nombre del autor
     """
-    author = mp.get(catalog['authors'], authorname)
-    if author:
-        return me.getValue(author)
-    return None
-
+    producer = mp.get(catalog['producers'], producername)
+    lista_peliculas = None
+    if producer:
+        lista_peliculas = me.getValue(producer)
+    return lista_peliculas
 
 def getBooksByTag(catalog, tagname):
     """
@@ -352,12 +337,13 @@ def element_data(lista,orden):
         datos= lt.firstElement(lista)
     elif orden== "ultima":
         datos= lt.lastElement(lista)
-    lt_datos.append(datos["original_title"])
+    lt_datos.append(datos["original title"])
+    '''
     lt_datos.append(datos["release_date"])
     lt_datos.append(datos["vote_average"])
     lt_datos.append(datos["vote_count"])
     lt_datos.append(datos["spoken_languages"])
-
+'''
     return lt_datos
 
 def load_file (archivo):

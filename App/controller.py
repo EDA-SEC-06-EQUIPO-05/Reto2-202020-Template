@@ -74,7 +74,7 @@ def loadMovs(catalog, moviesfile):
     input_file = csv.DictReader(open(moviesfile),dialect=dialect)
     for movie in input_file:
         model.addMovie(catalog, movie)
-        directors = movie['original_language'].split(",")  # Se obtienen los lenguajes
+        producers = movie['producers'].split(",")  # Se obtienen las productoras
 '''
 def loadTags(catalog, tagsfile):
     """
@@ -121,12 +121,12 @@ def tagsSize(catalog):
     return model.tagsSize(catalog)
 
 
-def getBooksByAuthor(catalog, authorname):
+def getMoviesbyProducer(catalog, producername):
     """
     Retorna los libros de un autor
     """
-    authorinfo = model.getBooksByAuthor(catalog, authorname)
-    return authorinfo
+    producerinfo = model.getMoviesbyProducer(catalog, producername)
+    return producerinfo
 
 
 def getBooksByTag(catalog, tagname):
