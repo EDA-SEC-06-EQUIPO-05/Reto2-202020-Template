@@ -71,10 +71,13 @@ def loadMovs(catalog, moviesfile):
     dialect = csv.excel()
     dialect.delimiter=";"
     moviesfile = cf.data_dir + moviesfile
-    input_file = csv.DictReader(open(moviesfile),dialect=dialect)
+    input_file = csv.DictReader(open(moviesfile, encoding='utf-8'),dialect=dialect)
+    #open(config.data_dir + archivo, encoding="utf-8") as csvfile:
     for movie in input_file:
         model.addMovie(catalog, movie)
-        producers = movie['producers'].split(",")  # Se obtienen las productoras
+        producers = movie['production_companies'].split(",")  # Se obtienen las productoras
+        for producer in producers:
+            model.addMovieProducer(catalog, producer.strip(), movie)
 '''
 def loadTags(catalog, tagsfile):
     """
@@ -103,16 +106,16 @@ def loadBooksTags(catalog, booktagsfile):
 #  Funciones para consultas
 # ___________________________________________________
 
-def booksSize(catalog):
+def moviesSize(catalog):
     """Numero de libros leido
     """
-    return model.booksSize(catalog)
+    return model.moviesSize(catalog)
 
 
-def authorsSize(catalog):
+def producersSize(catalog):
     """Numero de autores leido
     """
-    return model.authorsSize(catalog)
+    return model.producersSize(catalog)
 
 
 def tagsSize(catalog):

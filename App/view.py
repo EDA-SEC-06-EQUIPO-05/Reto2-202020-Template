@@ -38,7 +38,7 @@ operación seleccionada.
 #  Ruta a los archivos
 # ___________________________________________________
 
-moviesfile = 'DetailsSmall.csv'
+#moviesfile = 'Details.csv'
 #tagsfile = 'GoodReads/tags.csv'
 #booktagsfile = 'GoodReads/book_tags-small.csv'
 
@@ -50,18 +50,18 @@ moviesfile = 'DetailsSmall.csv'
 # ___________________________________________________
 
 
-def printAuthorData(author):
+def printProducerData(producer):
     """
     Imprime los libros de un autor determinado
     """
-    if author:
-        print('Autor encontrado: ' + author['name'])
-        print('Promedio: ' + str(author['average_rating']))
-        print('Total de libros: ' + str(lt.size(author['books'])))
-        iterator = it.newIterator(author['books'])
+    if producer:
+        print('Productora encontrada: ' + producer['name'])
+        print('Promedio: ' + str(producer['average_rating']))
+        print('Total de peliculas: ' + str(lt.size(producer['movies'])))
+        iterator = it.newIterator(producer['movies'])
         while it.hasNext(iterator):
-            book = it.next(iterator)
-            print('Titulo: ' + book['title'] + '  ISBN: ' + book['isbn'])
+            movie = it.next(iterator)
+            print('Titulo: ' + movie['title'])
     else:
         print('No se encontro el autor')
 
@@ -116,6 +116,7 @@ while True:
         archivo= input("Ingrese el nombre del archivo que desea cargar: ")
         print("Cargando lista de datos... ")
         lista_datos= controller.cargar_datos(archivo)
+        #print(lista_datos)
         #primer_elemento= controller.datos_primer_elemento(lista_datos)
         #ultimo_elemento= controller.datos_ultimo_elemento(lista_datos)
         #print("Se cargo el registro de "+str(lt.size(lista_datos))+" peliculas. A continuación esta la informacion de la primera y ultima pelicula del registro: \n")
@@ -126,13 +127,13 @@ while True:
         print("Inicializando Catálogo ....")
         # cont es el controlador que se usará de acá en adelante
         cont = controller.initCatalog()
+        #print(cont)
 
-    elif int(inputs) == 3:
         print("Cargando información de los archivos ....")
-        controller.loadData(cont, moviesfile)
+        controller.loadData(cont, archivo)
         print('Películas cargadas cargados: ' + str(controller.moviesSize(cont)))
-        print('Autores cargados: ' + str(controller.authorsSize(cont)))
-        print('Géneros cargados: ' + str(controller.tagsSize(cont)))
+        print('Productoras cargadas: ' + str(controller.producersSize(cont)))
+        #print('Géneros cargados: ' + str(controller.tagsSize(cont)))
 
     elif int(inputs) == 4:
         number = input("Buscando libros del año?: ")
@@ -142,7 +143,7 @@ while True:
     elif int(inputs) == 5:
         producername = input("Nombre de la productora a buscar: ")
         producerinfo = controller.getMoviesbyProducer(cont, producername)
-        print(producerinfo)
+        printProducerData(producerinfo)
 
     elif int(inputs) == 6:
         label = input("Etiqueta a buscar: ")

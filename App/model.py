@@ -57,10 +57,14 @@ def newCatalog():
 
     catalog['movies'] = lt.newList('SINGLE_LINKED', compareMoviesIds)
 
-    catalog['producers'] = mp.newMap(200,
+    catalog['producers'] = mp.newMap(200,109345121,
                                    maptype='PROBING',
                                    loadfactor=0.4,
-                                   comparefunction=compareLanguage)
+                                   comparefunction=compareProducersByName)
+    catalog['movieIds'] = mp.newMap(200,109345121,
+                                   maptype='PROBING',
+                                   loadfactor=0.4,
+                                   comparefunction=compareMapMovieIds)
     
     return catalog
 
@@ -72,7 +76,7 @@ def newProducer(name):
     """
     producer = {'name': "", "movies": None,  "average_rating": 0}
     producer['name'] = name
-    producer['movies'] = lt.newList('SINGLE_LINKED', compareAuthorsByName)
+    producer['movies'] = lt.newList('SINGLE_LINKED', compareProducersByName)
     return producer
 
 
@@ -104,7 +108,7 @@ def addMovie(catalog, movie):
     libro fue publicaco en ese año.
     """
     lt.addLast(catalog['movies'], movie)
-    mp.put(catalog['movieIds'], movie['details_movies_id'], movie)
+    #mp.put(catalog['movieIds'], movie['id'], movie)
     #addBookYear(catalog, book)
 
 '''
@@ -156,11 +160,11 @@ def addMovieProducer(catalog, producername, movie):
     lt.addLast(producer['movies'], movie)
 
     produceravg = producer['average_rating']
-    movieavg = movie['average_rating']
+    movieavg = movie['vote_average']
     if (produceravg == 0.0):
         producer['average_rating'] = float(movieavg)
     else:
-        producer['average_rating'] = (produceravg + float(movieavg)) / 2
+        producer['average_rating'] = round((produceravg + float(movieavg)) / 2,2)
 '''
 def addTag(catalog, tag):
     """
@@ -216,18 +220,18 @@ def getBooksByTag(catalog, tagname):
     return books
 
 
-def booksSize(catalog):
+def moviesSize(catalog):
     """
     Número de libros en el catago
     """
     return lt.size(catalog['movies'])
 
 
-def authorsSize(catalog):
+def producersSize(catalog):
     """
     Numero de autores en el catalogo
     """
-    return mp.size(catalog['authors'])
+    return mp.size(catalog['producers'])
 
 
 def tagsSize(catalog):
@@ -264,7 +268,7 @@ def compareMoviesIds(id1, id2):
         return -1
 
 
-def compareMapMoviesIds(id, entry):
+def compareMapMovieIds(id, entry):
     """
     Compara dos ids de libros, id es un identificador
     y entry una pareja llave-valor
@@ -278,15 +282,15 @@ def compareMapMoviesIds(id, entry):
         return -1
 
 
-def compareLanguage(keyname, author):
+def compareProducersByName(keyname, producer):
     """
     Compara dos nombres de autor. El primero es una cadena
     y el segundo un entry de un map
     """
-    authentry = me.getKey(author)
-    if (keyname == authentry):
+    produentry = me.getKey(producer)
+    if (keyname == produentry):
         return 0
-    elif (keyname > authentry):
+    elif (keyname > produentry):
         return 1
     else:
         return -1
