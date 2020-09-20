@@ -50,20 +50,24 @@ def newCatalog():
     """
     catalog = {'movies': None,
                #'title': None,
-               'producers': None}
-               #'vote_average': None,
+               'producers': None,
+               'directors': None}
                #'vote_count': None,
                #'release_date': None}
 
     catalog['movies'] = lt.newList('SINGLE_LINKED', compareMoviesIds)
 
     catalog['producers'] = mp.newMap(200,109345121,
-                                   maptype='PROBING',
-                                   loadfactor=0.5,
+                                   maptype='CHAINING',
+                                   loadfactor=0.4,
                                    comparefunction=compareProducersByName)
+    catalog['directors'] = mp.newMap(200,109345121,
+                                   maptype='CHAINING',
+                                   loadfactor=0.4,
+                                   comparefunction=compareDirectorsByName)
     catalog['movieIds'] = mp.newMap(200,109345121,
-                                   maptype='PROBING',
-                                   loadfactor=0.5,
+                                   maptype='CHAINING',
+                                   loadfactor=0.4,
                                    comparefunction=compareMapMovieIds)
     
     return catalog
@@ -79,6 +83,15 @@ def newProducer(name):
     producer['movies'] = lt.newList('SINGLE_LINKED', compareProducersByName)
     return producer
 
+def newDirector(name):
+    """
+    Crea una nueva estructura para modelar las peliculas de un director
+    y su promedio de ratings
+    """
+    director = {'name': "", "movies": None,  "average_rating": 0}
+    director['name'] = name
+    director['movies'] = lt.newList('SINGLE_LINKED', compareDirectorsByName)
+    return director
 
 def newTagBook(name, id):
     """
@@ -107,8 +120,9 @@ def addMovie(catalog, movie):
     Finalmente crea una entrada en el Map de años, para indicar que este
     libro fue publicaco en ese año.
     """
+    #print(movie)
     lt.addLast(catalog['movies'], movie)
-    #mp.put(catalog['movieIds'], movie['id'], movie)
+    mp.put(catalog['movieIds'], movie['id'], movie)
     #addBookYear(catalog, book)
 
 '''
@@ -149,6 +163,7 @@ def addMovieProducer(catalog, producername, movie):
     por un autor.
     Cuando se adiciona el libro se actualiza el promedio de dicho autor
     """
+    #print(movie)
     producers = catalog['producers']
     existproducer = mp.contains(producers, producername)
     if existproducer:
@@ -158,6 +173,7 @@ def addMovieProducer(catalog, producername, movie):
         producer = newProducer(producername)
         mp.put(producers, producername, producer)
     lt.addLast(producer['movies'], movie)
+    #producer['id'] = movie['id']
 
     produceravg = producer['average_rating']
     movieavg = movie['vote_average']
@@ -165,6 +181,34 @@ def addMovieProducer(catalog, producername, movie):
         producer['average_rating'] = float(movieavg)
     else:
         producer['average_rating'] = round((produceravg + float(movieavg)) / 2,2)
+
+def addMovieDirector(catalog, directorname, details, casting):
+    """
+    Esta función adiciona un libro a la lista de libros publicados
+    por un autor.
+    Cuando se adiciona el libro se actualiza el promedio de dicho autor
+    """
+    #print(movie)
+    directors = catalog['directors']
+    existdirector = mp.contains(directors, directorname)
+    if existdirector:
+        entry = mp.get(directors, directorname)
+        director = me.getValue(entry)
+    else:
+        director = newDirector(directorname)
+        mp.put(directors, directorname, director)
+
+    #print(casting['director_name'])
+
+    lt.addLast(director['movies'], casting)
+    #print(director['movies'])
+
+    directoravg = director['average_rating']
+    movieavg = details['vote_average']
+    if (directoravg == 0.0):
+        director['average_rating'] = float(movieavg)
+    else:
+        director['average_rating'] = round((directoravg + float(movieavg)) / 2,2)
 '''
 def addTag(catalog, tag):
     """
@@ -208,6 +252,17 @@ def getMoviesbyProducer(catalog, producername):
     if producer:
         lista_peliculas = me.getValue(producer)
     return lista_peliculas
+
+def getMoviesbyDirector(catalog, directorname):
+    """
+    Retorna un autor con sus libros a partir del nombre del autor
+    """
+    director = mp.get(catalog['directors'], directorname)
+    lista_peliculas = None
+    if director:
+        lista_peliculas = me.getValue(director)
+    return lista_peliculas
+
 
 def getBooksByTag(catalog, tagname):
     """
@@ -291,6 +346,19 @@ def compareProducersByName(keyname, producer):
     if (keyname == produentry):
         return 0
     elif (keyname > produentry):
+        return 1
+    else:
+        return -1
+
+def compareDirectorsByName(keyname, director):
+    """
+    Compara dos nombres de autor. El primero es una cadena
+    y el segundo un entry de un map
+    """
+    directentry = me.getKey(director)
+    if (keyname == directentry):
+        return 0
+    elif (keyname > directentry):
         return 1
     else:
         return -1
