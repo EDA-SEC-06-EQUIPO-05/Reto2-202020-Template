@@ -64,7 +64,23 @@ def printProducerData(producer):
             movie = it.next(iterator)
             print('Titulo: ' + movie['title'])
     else:
-        print('No se encontro el autor')
+        print('No se encontro a la productora')
+
+def printDirectorData(director):
+    """
+    Imprime los libros de un autor determinado
+    """
+    if director:
+        print('Director encontrado: ' + director['name'])
+        print('Promedio: ' + str(director['average_rating']))
+        print('Total de peliculas: ' + str(lt.size(director['movies'])))
+        iterator = it.newIterator(director['movies'])
+        while it.hasNext(iterator):
+            movie = it.next(iterator)
+            print('Titulo: ' + movie['id'])
+            #print(movie)
+    else:
+        print('No se encontro al director')
 
 
 def printBooksbyTag(books):
@@ -97,10 +113,10 @@ def printBooksbyYear(books):
 
 def printMenu():
     print("Bienvenido")
-    print("1- Cargar datos")
-    print("2- Inicializar Catálogo")
-    print("3- Cargar información en el catálogo")
-    print("4- Consultar las películas de una productora")
+    print("1- Inicializar Catálogo")
+    print("2- Cargar datos")
+    print("3- Consultar las películas de una productora")
+    print("4- Consultar las películas de un director")
     print("0- Salir")
 
 
@@ -112,10 +128,19 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
 
     if int(inputs) == 1:
-        archivo= input("Ingrese el nombre del archivo que desea cargar: ")
+        print("Inicializando Catálogo ....")
+        # cont es el controlador que se usará de acá en adelante
+        cont = controller.initCatalog()
+        #print(cont)
+
+    elif int(inputs) == 2:
+        details = input("Ingrese el nombre del archivo de detalles que desea cargar: ")
+        casting = input("Ingrese el nombre del archivo de elenco que desea cargar: ")
         print("Cargando lista de datos... ")
         #t1_start = process_time() #tiempo inicial
-        lista_datos= controller.cargar_datos(archivo)
+        #lista_datos= controller.cargar_datos(archivo)
+        controller.loadData(cont, details, casting)
+        print('Películas cargadas cargados: ' + str(controller.moviesSize(cont)))
         #t1_stop = process_time() #tiempo final
         #print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
         #print(lista_datos)
@@ -125,32 +150,18 @@ while True:
         #print("Nombre de la pelicula: "+primer_elemento[0]+", Fecha de estreno: "+primer_elemento[1]+", Calificacion promedio: "+primer_elemento[2]+", Cantidad de votos: "+primer_elemento[3]+", Idioma original: "+primer_elemento[4]+"\n")
         #print("Nombre de la pelicula: "+ultimo_elemento[0]+", Fecha de estreno: "+ultimo_elemento[1]+", Calificacion promedio: "+ultimo_elemento[2]+", Cantidad de votos: "+ultimo_elemento[3]+", Idioma original: "+ultimo_elemento[4]+"\n")
 
-    elif int(inputs) == 2:
-        print("Inicializando Catálogo ....")
-        # cont es el controlador que se usará de acá en adelante
-        cont = controller.initCatalog()
-        #print(cont)
     elif int(inputs) == 3:
-        print("Cargando información de los archivos ....")
-        #t1_start = process_time() #tiempo inicial
-        controller.loadData(cont, archivo)
-        print('Películas cargadas cargados: ' + str(controller.moviesSize(cont)))
-        print('Productoras cargadas: ' + str(controller.producersSize(cont)))
-        #t1_stop = process_time() #tiempo final
-        #print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
-        #Con Chaining la información de los archivos carga en 22.28125  segundos y factor de carga 0.4
-        #Con Chaining la información de los archivos carga en 37.515625  segundos y factor de carga 2.0
-        #Con Chaining la información de los archivos carga en 123.46875  segundos y factor de carga 10.0
-        #Con Probing la información de los archivos carga en 219.953125  segundos y factor de carga 0.4
-        #Con Probing la información de los archivos carga en 200.65625  segundos y factor de carga 0.5
-        #print('Géneros cargados: ' + str(controller.tagsSize(cont)))
-    elif int(inputs) == 4:
         producername = input("Nombre de la productora a buscar: ")
         #t1_start = process_time() #tiempo inicial
         producerinfo = controller.getMoviesbyProducer(cont, producername)
         printProducerData(producerinfo)
         #t1_stop = process_time() #tiempo final
         #print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
+
+    elif int(inputs) == 4:
+        directorname = input("Nombre del director a buscar: ")
+        directorinfo = controller.getMoviesbyDirector(cont, directorname)
+        printDirectorData(directorinfo)
     else:
         sys.exit(0)
 sys.exit(0)
