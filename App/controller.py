@@ -206,3 +206,8 @@ def cargar_datos(archivo):
     lista_data= model.load_file(archivo)
     return lista_data
 
+def pelis_genero(catalog,genero,lista_pelis):
+
+    tupla_genero= model.moviesbygenre(genero,catalog,lista_pelis)
+    return tupla_genero
+

@@ -117,6 +117,9 @@ def printMenu():
     print("2- Cargar datos")
     print("3- Consultar las películas de una productora")
     print("4- Consultar las películas de un director")
+    print("5- Consultar las peliculas de un actor")
+    print("6- Consultar las peliculas de un genero")
+    print("7- Consultar las peliculas de un país")
     print("0- Salir")
 
 
@@ -162,6 +165,13 @@ while True:
         directorname = input("Nombre del director a buscar: ")
         directorinfo = controller.getMoviesbyDirector(cont, directorname)
         printDirectorData(directorinfo)
+    elif int(inputs) == 6:
+        archivo= input("Inserte el nombre del archivo de peliculas: ")
+        genero= input("Inserte el nombre del genero del que desea conocer")
+        lista_datos= controller.cargar_datos(archivo)
+        tupla_genero= controller.pelis_genero(cont,genero,lista_datos)
+        print("Se encontraron "+str(tupla_genero[0])+" peliculas con la clasificacion de "+genero+", los votos promedio de este genero son "+str(tupla_genero[1])+" votos por pelicula. A contiuación se muestra la lista con todas las peliculas correspondientes al genero de "+genero+"\n")
+        print(tupla_genero[2])
     else:
         sys.exit(0)
 sys.exit(0)

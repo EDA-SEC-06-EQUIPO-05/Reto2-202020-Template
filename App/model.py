@@ -69,6 +69,10 @@ def newCatalog():
                                    maptype='CHAINING',
                                    loadfactor=0.4,
                                    comparefunction=compareMapMovieIds)
+    catalog['genre'] = mp.newMap(200,109345121,
+                                   maptype='CHAINING',
+                                   loadfactor=0.4,
+                                   comparefunction=compareMoviesbyGenre)
     
     return catalog
 
@@ -363,6 +367,19 @@ def compareDirectorsByName(keyname, director):
     else:
         return -1
 
+def compareMoviesbyGenre(keyname, genre):
+    """
+    Compara dos generos. El primero es una cadena
+    y el segundo un entry de un map
+    """
+    genero = me.getKey(genre)
+    if (keyname == genero):
+        return 0
+    elif (keyname > genero):
+        return 1
+    else:
+        return -1
+
 
 def compareAverage(name, tag):
     tagentry = me.getKey(tag)
@@ -430,3 +447,28 @@ def load_file (archivo):
     except:
         print("Hubo un error con la carga del archivo")
     return lst
+
+def moviesbygenre(genero,catalog,lista_pelis):
+
+    cantidad_peliculas_genero= 0
+    lista_peliculas= []
+    suma_votos= 0
+    cuenta= 0
+    promedio_votos= 0
+    gender= mp.get(catalog["genres"], genero)
+    if gender:
+        lista_peliculas = me.getValue(gender)
+        cantidad_peliculas_genero= len(lista_peliculas)
+    for pelis in lista_pelis:
+        if pelis["original_title"]==lista_peliculas[cuenta]:
+            suma_votos+= float(pelis["vote_count"])
+            cuenta+= 1
+
+    promedio_votos= suma_votos/cantidad_peliculas_genero
+
+    return (cantidad_peliculas_genero,promedio_votos,lista_peliculas)
+            
+
+
+
+
