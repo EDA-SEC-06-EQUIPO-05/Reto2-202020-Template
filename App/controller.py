@@ -66,6 +66,9 @@ def loadData(catalog, detailsfile, castingfile):
         producers = details['production_companies'].split(",")  # Se obtienen las productoras
         for producer in producers:
             model.addMovieProducer(catalog, producer.strip(), details)
+        genres_peli= details["genres"].split(",")
+        for genre in genres_peli:
+            model.AddMovieByGenre(catalog,genre.strip(),details)
     castingfile = cf.data_dir + castingfile
     input_c_file = csv.DictReader(open(castingfile, encoding='utf-8'),dialect=dialect)
     #open(config.data_dir + archivo, encoding="utf-8") as csvfile:

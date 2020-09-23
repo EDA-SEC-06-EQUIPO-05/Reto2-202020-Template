@@ -49,11 +49,11 @@ def newCatalog():
     Retorna el catalogo inicializado.
     """
     catalog = {'movies': None,
-               #'title': None,
+               'title': None,
                'producers': None,
-               'directors': None}
-               #'vote_count': None,
-               #'release_date': None}
+               'directors': None,
+               'vote_count': None,
+               'release_date': None}
 
     catalog['movies'] = lt.newList('SINGLE_LINKED', compareMoviesIds)
 
@@ -96,6 +96,16 @@ def newDirector(name):
     director['name'] = name
     director['movies'] = lt.newList('SINGLE_LINKED', compareDirectorsByName)
     return director
+
+def newGenre(name):
+    """
+    Crea una nueva estructura para modelar los generos, las peliculas correspondientes del catalogo
+    y su promedio de ratings
+    """
+    genre = {'name': "", "movies": None,  "average_vote_count": 0, "size":0}
+    genre['name'] = name
+    genre['movies'] = lt.newList('SINGLE_LINKED', compareMoviesbyGenre)
+    return genre
 
 def newTagBook(name, id):
     """
@@ -213,6 +223,21 @@ def addMovieDirector(catalog, directorname, details, casting):
         director['average_rating'] = float(movieavg)
     else:
         director['average_rating'] = round((directoravg + float(movieavg)) / 2,2)
+
+def AddMovieByGenre(catalog, genero, movie):
+
+    genero_arr= genero.split("|") 
+    for tipo in genero_arr:
+        genres = catalog['genres']
+        existgenre = mp.contains(genres, tipo)
+        if existgenre:
+            entry = mp.get(genres, tipo)
+            genre = me.getValue(entry)
+        else:
+            genre = newGenre(tipo)
+            mp.put(genres, tipo, genre)
+        lt.addLast(genre['movies'], movie)
+
 '''
 def addTag(catalog, tag):
     """
@@ -467,8 +492,5 @@ def moviesbygenre(genero,catalog,lista_pelis):
     promedio_votos= suma_votos/cantidad_peliculas_genero
 
     return (cantidad_peliculas_genero,promedio_votos,lista_peliculas)
-            
-
-
 
 
