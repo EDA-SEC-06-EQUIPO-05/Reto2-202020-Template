@@ -52,8 +52,10 @@ def newCatalog():
                'title': None,
                'producers': None,
                'directors': None,
-               'vote_count': None,
-               'release_date': None}
+               "actors": None,
+               "movieIds": None,
+               "genre": None,
+               "countries": None}
 
     catalog['movies'] = lt.newList('SINGLE_LINKED', compareMoviesIds)
 
@@ -65,6 +67,10 @@ def newCatalog():
                                    maptype='CHAINING',
                                    loadfactor=0.4,
                                    comparefunction=compareDirectorsByName)
+    catalog['actors'] = mp.newMap(200,109345121,
+                                   maptype='CHAINING',
+                                   loadfactor=0.4,
+                                   comparefunction=compareActorsByName)
     catalog['movieIds'] = mp.newMap(200,109345121,
                                    maptype='CHAINING',
                                    loadfactor=0.4,
@@ -101,6 +107,13 @@ def newDirector(name):
     director['name'] = name
     director['movies'] = lt.newList('SINGLE_LINKED', compareDirectorsByName)
     return director
+
+def newActor(name):
+
+    actor = {'name': "", "movies": None, "size" : 0,  "average_rating": 0, "most_frecuent_director_name":None,"most_frecuent_director_number":0,"dicc_directores":{}}
+    actor['name'] = name
+    actor['movies'] = lt.newList('SINGLE_LINKED', compareActorsByName)
+    return actor
 
 def newGenre(name):
     """
@@ -211,7 +224,7 @@ def addMovieProducer(catalog, producername, movie):
     else:
         producer['average_rating'] = round((produceravg + float(movieavg)) / 2,2)
 
-def addMovieDirector(catalog, directorname, details):
+def addMovieDirector(catalog, directorname, details, casting):
     """
     Esta función adiciona un libro a la lista de libros publicados
     por un autor.
@@ -229,8 +242,8 @@ def addMovieDirector(catalog, directorname, details):
 
     #print(casting['director_name'])
 
-    #lt.addLast(director['movies'], casting)
-    lt.addLast(director['movies'], details)
+    lt.addLast(director['movies'], casting)
+    #lt.addLast(director['movies'], details)
     #print(director['movies'])
 
     directoravg = director['average_rating']
@@ -287,6 +300,38 @@ def AddMovieByCountry(catalog, countryname, details, casting):
         country['average_rating'] = float(movieavg)
     else:
         country['average_rating'] = round((countryavg + float(movieavg)) / 2,2)
+
+def AddMovieByActor(catalog, name_actor, details, casting):
+
+    actors= catalog["actors"]
+    seguir= True
+    nombre_peli= ""
+    movieavg = 0
+    id_actual= casting["id"]
+    existactor = mp.contains(actors, name_actor)
+    if existactor:
+        entry = mp.get(actors, name_actor)
+        actor = me.getValue(entry)
+    else:
+        actor = newActor(name_actor)
+        mp.put(actors, name_actor, actor)
+    for lineas in details:
+        if lineas["id"]==id_actual and seguir==True:
+            nombre_peli= lineas["original_title"]
+            movieavg = float(lineas['average_rating'])
+            seguir= False
+    lt.addLast(actor['movies'], nombre_peli)
+    if casting["director_name"] not in actor["dicc_directores"]:
+        actor["dicc_directores"][casting["director_name"]]= 0
+    elif casting["director_name"] in actor["dicc_directores"]:
+        actor["dicc_directores"][casting["director_name"]]+= 1
+    actoravg = float(actor['average_rating'])
+    tamaño= int(actor["size"])
+    if actoravg == 0.0:
+        actor['average_rating'] = float(movieavg)
+    else:
+        actor['average_rating'] = round((float(actoravg) + float(movieavg)) ,2)
+    actor["size_movies"]= tamaño + 1
 
 
 '''    
@@ -453,6 +498,19 @@ def compareProducersByName(keyname, producer):
     else:
         return -1
 
+def compareActorsByName(keyname, actor):
+    """
+    Compara dos nombres de autor. El primero es una cadena
+    y el segundo un entry de un map
+    """
+    actoentry = me.getKey(actor)
+    if (keyname == actoentry):
+        return 0
+    elif (keyname > actoentry):
+        return 1
+    else:
+        return -1
+
 def compareDirectorsByName(keyname, director):
     """
     Compara dos nombres de autor. El primero es una cadena
@@ -580,5 +638,25 @@ def load_file (archivo):
 
     return (cantidad_peliculas_genero,promedio_votos,lista_peliculas)
     """
+
+def actor_register(catalog,nombre_actor):
+
+    registro= catalog["actors"][nombre_actor]
+    lista_peliculas= registro["movies"]
+    cantidad_peliculas= registro["size"]
+    promedio_calificacion= round(registro["average_rating"]/cantidad_peliculas,2)
+    diccionario_dir= registro["dicc_directores"]
+    mayor_num= 0
+    mayor_name= ""
+    for director in diccionario_dir:
+        valor= diccionario_dir[director]
+        if valor > mayor_num:
+            mayor_num= valor
+            registro["most_frecuent_director_number"]= valor
+            mayor_name= director
+            registro["most_frecuent_director_name"]= director
+
+    return (cantidad_peliculas,promedio_calificacion,mayor_name,lista_peliculas)
+
 
 

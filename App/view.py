@@ -77,7 +77,7 @@ def printDirectorData(director):
         iterator = it.newIterator(director['movies'])
         while it.hasNext(iterator):
             movie = it.next(iterator)
-            print('Titulo: ' + movie['title'])
+            print('Titulo: ' + movie['id'])
             #print(movie)
     else:
         print('No se encontro al director')
@@ -185,6 +185,13 @@ while True:
         directorname = input("Nombre del director a buscar: ")
         directorinfo = controller.getMoviesbyDirector(cont, directorname)
         printDirectorData(directorinfo)
+
+    elif int(inputs) == 5:
+        actorname = input("Ingrese el nombre del actor del que desea saber mas informacion: ")
+        regis_actor = controller.registro_actor(cont,actorname)
+        print(actorname+" ha participado en "+str(regis_actor[0])+" peliculas. En promedio tienen una calificacion de "+str(regis_actor[1])+" y el director con el que ha hecho mas colaboraciones es "+regis_actor[2]+". A continuacion vera una lista con todas las peliculas en las que ha actuado "+actorname+": \n")
+        print(regis_actor[3])
+
     elif int(inputs) == 6:
         #archivo= input("Inserte el nombre del archivo de peliculas: ")
         genrename= input("Inserte el nombre del genero del que desea conocer: ")
