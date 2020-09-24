@@ -77,7 +77,7 @@ def printDirectorData(director):
         iterator = it.newIterator(director['movies'])
         while it.hasNext(iterator):
             movie = it.next(iterator)
-            print('Titulo: ' + movie['id'])
+            print('id: ' + movie['id'])
             #print(movie)
     else:
         print('No se encontro al director')
