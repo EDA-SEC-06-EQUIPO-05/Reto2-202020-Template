@@ -77,34 +77,54 @@ def printDirectorData(director):
         iterator = it.newIterator(director['movies'])
         while it.hasNext(iterator):
             movie = it.next(iterator)
-            print('Titulo: ' + movie['id'])
+            print('Titulo: ' + movie['title'])
             #print(movie)
     else:
         print('No se encontro al director')
 
 
-def printBooksbyTag(books):
+def printGenreData(genre):
     """
     Imprime los libros que han sido clasificados con
     una etiqueta
     """
+    if genre:
+        print('Genero encontrado: ' + genre['name'])
+        print('Promedio: ' + str(genre['average_rating']))
+        print('Total de peliculas: ' + str(lt.size(genre['movies'])))
+        iterator = it.newIterator(genre['movies'])
+        while it.hasNext(iterator):
+            movie = it.next(iterator)
+            print('Titulo: ' + movie['title'])
+            #print(movie)
+    """else:
+        print('No se encontro al director')
     print('Se encontraron: ' + str(lt.size(books)) + ' Libros')
     iterator = it.newIterator(books)
     while it.hasNext(iterator):
         book = it.next(iterator)
-        print(book['title'])
+        print(book['title'])"""
 
 
-def printBooksbyYear(books):
+def printCountryData(country):
     """
     Imprime los libros que han sido publicados en un
     año
     """
-    print('Se encontraron: ' + str(lt.size(books)) + ' Libros')
+    if country:
+        print('País encontrado: ' + country['name'])
+        print('Promedio: ' + str(country['average_rating']))
+        print('Total de peliculas: ' + str(lt.size(country['movies'])))
+        iterator = it.newIterator(country['movies'])
+        while it.hasNext(iterator):
+            movie = it.next(iterator)
+            print('Titulo: ' + movie['title'])
+    
+    """print('Se encontraron: ' + str(lt.size(books)) + ' Libros')
     iterator = it.newIterator(books)
     while it.hasNext(iterator):
         book = it.next(iterator)
-        print(book['title'])
+        print(book['title'])"""
     
 # ___________________________________________________
 #  Menu principal
@@ -166,12 +186,20 @@ while True:
         directorinfo = controller.getMoviesbyDirector(cont, directorname)
         printDirectorData(directorinfo)
     elif int(inputs) == 6:
-        archivo= input("Inserte el nombre del archivo de peliculas: ")
-        genero= input("Inserte el nombre del genero del que desea conocer")
-        lista_datos= controller.cargar_datos(archivo)
-        tupla_genero= controller.pelis_genero(cont,genero,lista_datos)
-        print("Se encontraron "+str(tupla_genero[0])+" peliculas con la clasificacion de "+genero+", los votos promedio de este genero son "+str(tupla_genero[1])+" votos por pelicula. A contiuación se muestra la lista con todas las peliculas correspondientes al genero de "+genero+"\n")
-        print(tupla_genero[2])
+        #archivo= input("Inserte el nombre del archivo de peliculas: ")
+        genrename= input("Inserte el nombre del genero del que desea conocer: ")
+        genreinfo = controller.getMoviesbyGenre(cont, genrename)
+        #lista_datos= controller.cargar_datos(archivo)
+        #tupla_genero= controller.pelis_genero(cont,genero,lista_datos)
+        #print("Se encontraron "+str(tupla_genero[0])+" peliculas con la clasificacion de "+genero+", los votos promedio de este genero son "+str(tupla_genero[1])+" votos por pelicula. A contiuación se muestra la lista con todas las peliculas correspondientes al genero de "+genero+"\n")
+        #print(tupla_genero[2])
+        printGenreData(genreinfo)
+    elif int(inputs) == 7:
+        countryname = input("Nombre del país a buscar: ")
+        countryinfo = controller.getMoviesbyCountry(cont, countryname)
+        printCountryData(countryinfo)
+
+
     else:
         sys.exit(0)
 sys.exit(0)

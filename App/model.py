@@ -69,10 +69,15 @@ def newCatalog():
                                    maptype='CHAINING',
                                    loadfactor=0.4,
                                    comparefunction=compareMapMovieIds)
-    catalog['genre'] = mp.newMap(200,109345121,
+    catalog['genres'] = mp.newMap(200,109345121,
                                    maptype='CHAINING',
                                    loadfactor=0.4,
                                    comparefunction=compareMoviesbyGenre)
+    catalog['countries'] = mp.newMap(200,109345121,
+                                   maptype='CHAINING',
+                                   loadfactor=0.4,
+                                   comparefunction=compareMoviesbyCountry)
+
     
     return catalog
 
@@ -106,6 +111,16 @@ def newGenre(name):
     genre['name'] = name
     genre['movies'] = lt.newList('SINGLE_LINKED', compareMoviesbyGenre)
     return genre
+
+def newCountry(name):
+    """
+    Crea una nueva estructura para modelar los generos, las peliculas correspondientes del catalogo
+    y su promedio de ratings
+    """
+    country = {'name': "", "movies": None,  "average_vote_count": 0, "size":0}
+    country['name'] = name
+    country['movies'] = lt.newList('SINGLE_LINKED', compareMoviesbyCountry)
+    return country
 
 def newTagBook(name, id):
     """
@@ -196,7 +211,7 @@ def addMovieProducer(catalog, producername, movie):
     else:
         producer['average_rating'] = round((produceravg + float(movieavg)) / 2,2)
 
-def addMovieDirector(catalog, directorname, details, casting):
+def addMovieDirector(catalog, directorname, details):
     """
     Esta función adiciona un libro a la lista de libros publicados
     por un autor.
@@ -214,7 +229,8 @@ def addMovieDirector(catalog, directorname, details, casting):
 
     #print(casting['director_name'])
 
-    lt.addLast(director['movies'], casting)
+    #lt.addLast(director['movies'], casting)
+    lt.addLast(director['movies'], details)
     #print(director['movies'])
 
     directoravg = director['average_rating']
@@ -224,8 +240,56 @@ def addMovieDirector(catalog, directorname, details, casting):
     else:
         director['average_rating'] = round((directoravg + float(movieavg)) / 2,2)
 
-def AddMovieByGenre(catalog, genero, movie):
+def AddMovieByGenre(catalog, genrename, details):
 
+    genres = catalog['genres']
+    existgenre = mp.contains(genres, genrename)
+    if existgenre:
+        entry = mp.get(genres, genrename)
+        genre = me.getValue(entry)
+    else:
+        genre = newDirector(genrename)
+        mp.put(genres, genrename, genre)
+
+    #print(casting['director_name'])
+
+    #lt.addLast(director['movies'], casting)
+    lt.addLast(genre['movies'], details)
+    #print(director['movies'])
+
+    genreavg = genre['average_rating']
+    movieavg = details['vote_average']
+    if (genreavg == 0.0):
+        genre['average_rating'] = float(movieavg)
+    else:
+        genre['average_rating'] = round((genreavg + float(movieavg)) / 2,2)
+
+def AddMovieByCountry(catalog, countryname, details, casting):
+
+    countries = catalog['countries']
+    existcountry = mp.contains(countries, countryname)
+    if existcountry:
+        entry = mp.get(countries, countryname)
+        country = me.getValue(entry)
+    else:
+        country = newCountry(countryname)
+        mp.put(countries, countryname, country)
+
+    #print(casting['director_name'])
+
+    #lt.addLast(country['movies'], casting)
+    lt.addLast(country['movies'], details)
+    #print(director['movies'])
+
+    countryavg = country['average_rating']
+    movieavg = details['vote_average']
+    if (countryavg == 0.0):
+        country['average_rating'] = float(movieavg)
+    else:
+        country['average_rating'] = round((countryavg + float(movieavg)) / 2,2)
+
+
+'''    
     genero_arr= genero.split("|") 
     for tipo in genero_arr:
         genres = catalog['genres']
@@ -238,7 +302,7 @@ def AddMovieByGenre(catalog, genero, movie):
             mp.put(genres, tipo, genre)
         lt.addLast(genre['movies'], movie)
 
-'''
+
 def addTag(catalog, tag):
     """
     Adiciona un tag a la tabla de tags dentro del catalogo
@@ -293,15 +357,25 @@ def getMoviesbyDirector(catalog, directorname):
     return lista_peliculas
 
 
-def getBooksByTag(catalog, tagname):
+def getMoviesbyGenre(catalog, genrename):
     """
     Retornar la lista de libros asociados a un tag
     """
-    tag = mp.get(catalog['tags'], tagname)
-    books = None
-    if tag:
-        books = me.getValue(tag)['books']
-    return books
+    genre = mp.get(catalog['genres'], genrename)
+    lista_peliculas = None
+    if genre:
+        lista_peliculas = me.getValue(genre)
+    return lista_peliculas
+
+def getMoviesbyCountry(catalog, countryname):
+    """
+    Retornar la lista de libros asociados a un tag
+    """
+    country = mp.get(catalog['countries'], countryname)
+    lista_peliculas = None
+    if country:
+        lista_peliculas = me.getValue(country)
+    return lista_peliculas
 
 
 def moviesSize(catalog):
@@ -405,6 +479,19 @@ def compareMoviesbyGenre(keyname, genre):
     else:
         return -1
 
+def compareMoviesbyCountry(keyname, country):
+    """
+    Compara dos generos. El primero es una cadena
+    y el segundo un entry de un map
+    """
+    pais = me.getKey(country)
+    if (keyname == pais):
+        return 0
+    elif (keyname > pais):
+        return 1
+    else:
+        return -1
+
 
 def compareAverage(name, tag):
     tagentry = me.getKey(tag)
@@ -473,14 +560,14 @@ def load_file (archivo):
         print("Hubo un error con la carga del archivo")
     return lst
 
-def moviesbygenre(genero,catalog,lista_pelis):
+"""def moviesbygenre(genero,catalog,lista_pelis):
 
     cantidad_peliculas_genero= 0
     lista_peliculas= []
     suma_votos= 0
     cuenta= 0
     promedio_votos= 0
-    gender= mp.get(catalog["genres"], genero)
+    gender= mp.get(catalog["genre"], genero)
     if gender:
         lista_peliculas = me.getValue(gender)
         cantidad_peliculas_genero= len(lista_peliculas)
@@ -492,5 +579,6 @@ def moviesbygenre(genero,catalog,lista_pelis):
     promedio_votos= suma_votos/cantidad_peliculas_genero
 
     return (cantidad_peliculas_genero,promedio_votos,lista_peliculas)
+    """
 
 

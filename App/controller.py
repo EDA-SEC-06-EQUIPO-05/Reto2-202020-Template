@@ -75,7 +75,7 @@ def loadData(catalog, detailsfile, castingfile):
     for casting in input_c_file:
         directors = casting['director_name'].split(",")  # Se obtienen los directores
         for director in directors:
-            model.addMovieDirector(catalog, director.strip(), details, casting)
+            model.addMovieDirector(catalog, director.strip(), details)
 
 
 
@@ -179,22 +179,22 @@ def getMoviesbyDirector(catalog, directorname):
     return directorinfo
 
 
-def getBooksByTag(catalog, tagname):
+def getMoviesbyGenre(catalog, genrename):
     """
     Retorna los libros que han sido marcados con
     una etiqueta
     """
-    books = model.getBooksByTag(catalog, tagname)
-    return books
+    genreinfo = model.getMoviesbyGenre(catalog, genrename)
+    return genreinfo
 
 
-def getBooksYear(catalog, year):
+def getMoviesbyCountry(catalog, countryname):
     """
     Retorna los libros que fueron publicados
     en un año
     """
-    books = model.getBooksByYear(catalog, year)
-    return books
+    countryinfo = model.getMoviesbyCountry(catalog, countryname)
+    return countryinfo
 
 def datos_primer_elemento(lista):
     primer_ele= model.element_data(lista,"primera")
