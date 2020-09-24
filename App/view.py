@@ -165,8 +165,14 @@ while True:
         directorname = input("Nombre del director a buscar: ")
         directorinfo = controller.getMoviesbyDirector(cont, directorname)
         printDirectorData(directorinfo)
+
+    elif int(inputs) == 5:
+        actorname = input("Ingrese el nombre del actor del que desea saber mas informacion: ")
+        regis_actor = controller.registro_actor(cont,actorname)
+        print(actorname+" ha participado en "+str(regis_actor[0])+" peliculas. En promedio tienen una calificacion de "+str(regis_actor[1])+" y el director con el que ha hecho mas colaboraciones es "+regis_actor[2]+". A continuacion vera una lista con todas las peliculas en las que ha actuado "+actorname+": \n")
+        print(regis_actor[3])
+
     elif int(inputs) == 6:
-        archivo= input("Inserte el nombre del archivo de peliculas: ")
         genero= input("Inserte el nombre del genero del que desea conocer")
         lista_datos= controller.cargar_datos(archivo)
         tupla_genero= controller.pelis_genero(cont,genero,lista_datos)

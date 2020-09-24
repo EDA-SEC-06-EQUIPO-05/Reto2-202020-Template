@@ -69,6 +69,7 @@ def loadData(catalog, detailsfile, castingfile):
         genres_peli= details["genres"].split(",")
         for genre in genres_peli:
             model.AddMovieByGenre(catalog,genre.strip(),details)
+        countries= details["production_countries"].split(",")
     castingfile = cf.data_dir + castingfile
     input_c_file = csv.DictReader(open(castingfile, encoding='utf-8'),dialect=dialect)
     #open(config.data_dir + archivo, encoding="utf-8") as csvfile:
@@ -76,8 +77,21 @@ def loadData(catalog, detailsfile, castingfile):
         directors = casting['director_name'].split(",")  # Se obtienen los directores
         for director in directors:
             model.addMovieDirector(catalog, director.strip(), details, casting)
-
-
+        actor1 = casting["actor1_name"].split(",")
+        actor2 = casting["actor2_name"].split(",")
+        actor3 = casting["actor3_name"].split(",")
+        actor4 = casting["actor4_name"].split(",")
+        actor5 = casting["actor5_name"].split(",")
+        for actoruno in actor1:
+            model.AddMovieByActor(catalog, actoruno.strip(), input_file, casting)
+        for actordos in actor2:
+            model.AddMovieByActor(catalog, actordos.strip(), input_file, casting)
+        for actortres in actor3:
+            model.AddMovieByActor(catalog, actortres.strip(), input_file, casting)
+        for actorcuatro in actor4:
+            model.AddMovieByActor(catalog, actorcuatro.strip(), input_file, casting)
+        for actorcinco in actor5:
+            model.AddMovieByActor(catalog, actorcinco.strip(), input_file, casting)
 
     #loadDetails(catalog, detailsfile)
     #loadCasting(catalog, castingfile)
@@ -213,4 +227,9 @@ def pelis_genero(catalog,genero,lista_pelis):
 
     tupla_genero= model.moviesbygenre(genero,catalog,lista_pelis)
     return tupla_genero
+
+def registro_actor(catalog,nombre_actor):
+
+    reg_actor= model.actor_register(catalog,nombre_actor)
+    return reg_actor
 
